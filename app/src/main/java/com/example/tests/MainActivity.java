@@ -2,8 +2,11 @@ package com.example.tests;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,10 +17,12 @@ import java.io.InputStreamReader;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private TextView v1, v2, v3, v4, questionShow;
+    private TextView v1, v2, v3, v4, questionShow, result;
     private Question question;
     private String answer;
-    private int number = 0;
+    private int number = 0, rightAnswers = 0, allQuestions = 0;
+    private Button restart;
+    private LinearLayout mainlayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +39,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         v4.setOnClickListener(this);
 
         questionShow = findViewById(R.id.question);
+        result = findViewById(R.id.result);
+        restart = findViewById(R.id.restart);
+        mainlayout = findViewById(R.id.main_layout);
+        restart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                number = 0;
+                rightAnswers = 0;
+                allQuestions = 0;
+                mainlayout.setVisibility(View.VISIBLE);
+                result.setVisibility(View.INVISIBLE);
+                restart.setVisibility(View.INVISIBLE);
+                showQuestion(number);
+                System.out.println(number);
+            }
+        });
         question = new Question(getQuestionsAndAnswersFromFile(), getVariantsFromFile());
         showQuestion(number);
     }
@@ -43,41 +64,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()) {
             case R.id.v1:
                 if (v1.getText().equals(answer)) {
-                    Toast.makeText(MainActivity.this, "CORRECT", Toast.LENGTH_SHORT).show();
+                    rightAnswers++;
+                    allQuestions++;
                     showQuestion(number);
                 } else {
-                    Toast.makeText(MainActivity.this, "ERROR", Toast.LENGTH_SHORT).show();
+                    showQuestion(number);
+                    allQuestions++;
                 }
                 break;
             case R.id.v2:
                 if (v2.getText().equals(answer)) {
-                    Toast.makeText(MainActivity.this, "CORRECT", Toast.LENGTH_SHORT).show();
+                    rightAnswers++;
+                    allQuestions++;
                     showQuestion(number);
                 } else {
-                    Toast.makeText(MainActivity.this, "ERROR", Toast.LENGTH_SHORT).show();
+                    showQuestion(number);
+                    allQuestions++;
                 }
                 break;
             case R.id.v3:
                 if (v3.getText().equals(answer)) {
-                    Toast.makeText(MainActivity.this, "CORRECT", Toast.LENGTH_SHORT).show();
+                    rightAnswers++;
+                    allQuestions++;
                     showQuestion(number);
                 } else {
-                    Toast.makeText(MainActivity.this, "ERROR", Toast.LENGTH_SHORT).show();
+                    showQuestion(number);
+                    allQuestions++;
                 }
                 break;
             case R.id.v4:
                 if (v4.getText().equals(answer)) {
-                    Toast.makeText(MainActivity.this, "CORRECT", Toast.LENGTH_SHORT).show();
+                    rightAnswers++;
+                    allQuestions++;
                     showQuestion(number);
                 } else {
-                    Toast.makeText(MainActivity.this, "ERROR", Toast.LENGTH_SHORT).show();
+                    showQuestion(number);
+                    allQuestions++;
                 }
                 break;
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private void showQuestion(int gbc) {
-        if (number < 3) {
+
+        if (number < getVariantsFromFile().length) {
             v1.setText(question.getVariant1(gbc));
             v2.setText(question.getVariant2(gbc));
             v3.setText(question.getVariant3(gbc));
@@ -87,7 +118,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             answer = question.getCorrectAnswer(gbc);
             number++;
         } else {
-            Toast.makeText(MainActivity.this, "Test is over", Toast.LENGTH_SHORT).show();
+            result.setText("Test is finished \n Your result: " + rightAnswers + "/" + allQuestions);
+            mainlayout.setVisibility(View.INVISIBLE);
+            result.setVisibility(View.VISIBLE);
+            restart.setVisibility(View.VISIBLE);
         }
     }
 
