@@ -52,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 result.setVisibility(View.INVISIBLE);
                 restart.setVisibility(View.INVISIBLE);
                 showQuestion(number);
-                System.out.println(number);
             }
         });
         question = new Question(getQuestionsAndAnswersFromFile(), getVariantsFromFile());
@@ -129,27 +128,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String[][] getQuestionsAndAnswersFromFile() {
         InputStream inputStream;
         inputStream = this.getResources().openRawResource(R.raw.lilpeep);
-        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-        StringBuilder sb = new StringBuilder();
-        String fileAsString;
-        try {
-            String info = br.readLine();
-            while (info != null) {
-                sb.append(info).append("\n");
-                info = br.readLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("THERE IS ERROR");
-        }
-        fileAsString = sb.toString();
-
-        return takeArray(fileAsString);
+        return takeArray(inputStream);
     }
 
     private String[][] getVariantsFromFile() {
         InputStream inputStream;
         inputStream = this.getResources().openRawResource(R.raw.lilpeep_variants);
+        return takeArray(inputStream);
+    }
+
+    private String[][] takeArray(InputStream inputStream) {
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
         StringBuilder sb = new StringBuilder();
         String fileAsString;
@@ -165,11 +153,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         fileAsString = sb.toString();
 
-        return takeArray(fileAsString);
-    }
-
-    private String[][] takeArray(String input) {
-        String[] firstSplit = input.split("\n");
+        String[] firstSplit = fileAsString.split("\n");
         String[][] allInfo = new String[firstSplit.length][firstSplit[0].length()];
         for (int i = 0; i < firstSplit.length; i++) {
             for (int j = 0; j < firstSplit[i].split(" / ").length; j++) {
